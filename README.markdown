@@ -1,0 +1,1 @@
+Project Silver Shorts is available for all under the MIT license.
