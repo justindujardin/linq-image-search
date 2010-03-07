@@ -57,12 +57,13 @@ namespace djc
             public Thumb Thumbnail;
          }
 
-         public class ImageQuery
+         static class ImageQuery
          {
-            #region Public Interface
+            #region Public Search Interface
             public delegate void SearchResultCallback(List<ImageResult> results);
-            public void Search(string appId, string search, SearchResultCallback callback, int numImages = 10, int offsetIndex = 0, bool useSafeSearch = true)
+            static public void Search(string appId, string search, SearchResultCallback callback, int numImages = 10, int offsetIndex = 0, bool useSafeSearch = true)
             {
+               // Use the WebClient class to perform an asynchronous URL based query against Bing
                WebClient client = new WebClient();
                client.DownloadStringCompleted += _downloadStringCompleted;
 
@@ -82,24 +83,35 @@ namespace djc
                    + "&Image.Count=" + Convert.ToString(numImages)
                    + "&Image.Offset=" + Convert.ToString(offsetIndex);
 
+               // Create a URI from the request string and fire off the query
+               // Note that we're passing the callback delegate as user data
                Uri uri = new Uri(requestString, UriKind.Absolute);
                client.DownloadStringAsync(new Uri(requestString), callback);
             }
             #endregion
 
             #region XML to Object LINQ
-            private void _downloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+            /// <summary>
+            /// Event handler for Bing Image query result XML
+            /// </summary>
+            /// <param name="e">e.UserState as SearchResultCallback</param>
+            static private void _downloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
             {
                SearchResultCallback callback = e.UserState as SearchResultCallback;
                if (e.Error != null || callback == null)
                   return;
 
-               List<ImageResult> results = new List<ImageResult>();
-               string xmlText = e.Result.ToString();
+               List<ImageResult> results = null;
                try
                {
-                  XDocument doc = XDocument.Parse(xmlText);
+                  // Parse the XML response text 
+                  XDocument doc = XDocument.Parse(e.Result.ToString());
+
+                  // Elements in the response all conform to this schema and have a namespace prefix of mms:
+                  // For our LINQ query to work properly, we must use mmsNs + ElementName
                   XNamespace mmsNs = XNamespace.Get("http://schemas.microsoft.com/LiveSearch/2008/04/XML/multimedia");
+
+                  // Build a LINQ query to parse the XML data into our custom ImageResult objects
                   var imageResults =
                      from ir in doc.Descendants()
                      where ir.Name.Equals(mmsNs + "ImageResult")
@@ -126,14 +138,16 @@ namespace djc
                             }).Single(),
                      };
 
-                  foreach (ImageResult imgResult in imageResults)
-                     results.Add(imgResult);
+                  // Execute the LINQ query and stuff the results into our list 
+                  results = imageResults.ToList();
                }
                catch (System.Exception ex)
                {
                   throw new XmlException("Failed LINQ query against BING XML result", ex);
                }
 
+               if (results == null)
+                  results = new List<ImageResult>();
                // invoke search callback
                callback(results);
             }

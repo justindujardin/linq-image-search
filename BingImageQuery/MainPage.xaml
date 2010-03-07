@@ -6,7 +6,7 @@
     mc:Ignorable="d" xmlns:dataInput="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data.Input" xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls" d:DesignHeight="199" d:DesignWidth="320" MinWidth="320" MinHeight="50">
     <Grid x:Name="LayoutRoot">
         <!-- Header -->
-        <TextBox Height="28" Margin="180,12,61,0" Name="textInput" VerticalAlignment="Top" Text="Turtles" MaxLength="20" TextAlignment="Center" Foreground="Gray" FontSize="14" FontWeight="Normal" FontStyle="Normal" KeyDown="textInput_KeyDown" Background="LightYellow">
+        <TextBox Height="28" Margin="180,12,61,0" Name="txtInput" VerticalAlignment="Top" Text="Turtles" MaxLength="20" TextAlignment="Center" Foreground="Gray" FontSize="14" FontWeight="Normal" FontStyle="Normal" KeyDown="txtInput_KeyDown" Background="LightYellow">
         </TextBox>
         <!-- Canvas -->
         <ScrollViewer Background="LightYellow" Margin="12,54,13,12" Name="canvasScroll" Padding="6" VerticalScrollBarVisibility="Auto" Visibility="Visible">
@@ -26,16 +26,16 @@
                 </Grid.ColumnDefinitions>
             </Grid>
         </ScrollViewer>
-        <dataInput:Label Height="Auto" HorizontalAlignment="Left" Name="headerShadow" VerticalAlignment="Top" Width="Auto" Content="Silver Shorts" FontFamily="Arial" FontSize="24" Foreground="WhiteSmoke" Margin="12,11,0,0">
+        <dataInput:Label Content="Silver Shorts" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" FontFamily="Arial" FontSize="24" Foreground="WhiteSmoke" Margin="12,11,0,0">
             <dataInput:Label.Effect>
                 <DropShadowEffect ShadowDepth="1" BlurRadius="4" />
             </dataInput:Label.Effect>
         </dataInput:Label>
-        <dataInput:Label Content="(bing)" FontFamily="Arial" FontSize="10" Foreground="#CDFF0000" Height="Auto" HorizontalAlignment="Left" Margin="151,11,0,0" Name="label1" VerticalAlignment="Top" Width="Auto" Opacity="0.75">
+        <dataInput:Label Content="(bing)" FontFamily="Arial" FontSize="10" Foreground="#CDFF0000" Height="Auto" HorizontalAlignment="Left" Margin="151,11,0,0" VerticalAlignment="Top" Width="Auto" Opacity="0.75">
             <dataInput:Label.Effect>
                 <DropShadowEffect BlurRadius="2" ShadowDepth="1" Opacity="0.75" />
             </dataInput:Label.Effect>
         </dataInput:Label>
-        <Button Content="GO" Height="28" Margin="0,12,12,0" Name="btnGO" VerticalAlignment="Top" FontSize="14" Foreground="#D4000000" HorizontalAlignment="Right" Width="43" Click="btnGO_Click" />
+        <Button Content="GO" Height="28" Margin="0,12,12,0" Name="btnSearch" VerticalAlignment="Top" FontSize="14" Foreground="#D4000000" HorizontalAlignment="Right" Width="43" Click="btnSearch_Click" />
     </Grid>
 </UserControl>

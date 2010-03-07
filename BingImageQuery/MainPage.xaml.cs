@@ -36,7 +36,7 @@ namespace BingImageQuery
    public partial class MainPage : UserControl
    {
       /// <summary>
-      /// Your Bing Application Id goes here
+      /// Your Bing Application Id goes here (the default is not real and will not work)
       /// </summary>
       private const string _appId = "KJH45KJHF89U0W98FO8318HJF8YAQ089F3O2HJRF";
 
@@ -45,39 +45,51 @@ namespace BingImageQuery
          InitializeComponent();
       }
 
-      #region Bing Image Search
-      private void btnGO_Click(object sender, RoutedEventArgs e)
+      #region  UI Element Event handlers
+      private void btnSearch_Click(object sender, RoutedEventArgs e)
       {
-         if (!btnGO.IsEnabled)
+         if (!btnSearch.IsEnabled)
             return;
 
-         btnGO.IsEnabled = false;
-         textInput.IsEnabled = false;
+         // Dsiable the UI elements that can be interacted with while a query is happening
+         btnSearch.IsEnabled = false;
+         txtInput.IsEnabled = false;
+
+         // Clear any thumbnails from the canvas grid
          pssCanvas.Children.Clear();
 
-         ImageQuery imageSearch = new ImageQuery();
-         imageSearch.Search(_appId, textInput.Text, new ImageQuery.SearchResultCallback(BingSearchResults));
+         // Perform the search
+         ImageQuery.Search(_appId, txtInput.Text, new ImageQuery.SearchResultCallback(BingSearchResults));
       }
-      private void textInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+      private void txtInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
       {
          // Enter triggers search
-         if (e.Key == Key.Enter && btnGO.IsEnabled)
+         if (e.Key == Key.Enter && btnSearch.IsEnabled)
          {
-            btnGO_Click(sender, e);
+            btnSearch_Click(sender, e);
          }
       }
+      #endregion
 
-
+      #region Bing Image Search Results Callback
+      /// <summary>
+      /// Handle results of a Bing Image query, placing thumbnails on the Grid Canvas for viewing
+      /// </summary>
+      /// <param name="images">A List of djc.SilverShorts.Bing.ImageResult objects 
+      /// that describe the results of a Bing query</param>
       private void BingSearchResults(List<ImageResult> images)
       {
          int gridCol = 0;
          int gridRow = 0;
-         int count = 0; // When !% 3 increment the row
+         int count = 0;
 
+         // Iterate over the results and create Image thumbnails for each
          foreach (ImageResult result in images)
          {
             Uri uriThumb = new Uri(result.Thumbnail.Url,UriKind.Absolute);
 
+            // The constructor to BitmapImage is passed the URI of the 
+            // thumbnail, and asynchronously downloads the image data
             Image newImage = new Image()
             {
                Source = new BitmapImage(uriThumb),
@@ -86,21 +98,23 @@ namespace BingImageQuery
                Opacity = 0.9
             };
 
-            // Download the image
+            // Add the image to the grid canvas
             pssCanvas.Children.Add(newImage);
 
+            // Calculate which Row/Column it belongs in and set it
             gridCol = count % pssCanvas.ColumnDefinitions.Count;
             newImage.SetValue(Grid.ColumnProperty, gridCol);
             newImage.SetValue(Grid.RowProperty, gridRow);            
             
-            if (gridCol == 2)
+            // At the end of a column, hit the next row
+            if (gridCol == (pssCanvas.ColumnDefinitions.Count - 1))
                gridRow++;
             count++;
          }
 
          // Restore UI state
-         btnGO.IsEnabled = true;
-         textInput.IsEnabled = true;
+         btnSearch.IsEnabled = true;
+         txtInput.IsEnabled = true;
       }
       #endregion
    }
