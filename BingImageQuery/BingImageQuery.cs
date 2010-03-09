@@ -59,36 +59,33 @@ namespace djc.SilverShorts.Bing
       public delegate void SearchResultCallback(List<ImageResult> results);
       static public void Search(string appId, string search, SearchResultCallback callback, int numImages = 10, int offsetIndex = 0, bool useSafeSearch = true)
       {
-         // Use the WebClient class to perform an asynchronous URL based query against Bing
-         WebClient client = new WebClient();
-         client.DownloadStringCompleted += _downloadStringCompleted;
-
          string requestString = "http://api.bing.net/xml.aspx?"
-
              // Common request fields (required)
              + "AppId=" + appId
              + "&Query=" + search
              + "&Sources=Image"
-
              // Common request fields (optional)
              + "&Version=2.0"
              + "&Market=en-us"
              + (useSafeSearch ? "&Adult=Moderate" : "")
-
              // Image-specific request fields (optional)
-             + "&Image.Count=" + Convert.ToString(numImages)
-             + "&Image.Offset=" + Convert.ToString(offsetIndex);
+             + "&Image.Count=" + numImages.ToString()
+             + "&Image.Offset=" + offsetIndex.ToString();
 
-         // Create a URI from the request string and fire off the query
-         // Note that we're passing the callback delegate as user data
+         // Create a URI from the request string 
          Uri uri = new Uri(requestString, UriKind.Absolute);
+         
+         // Use the WebClient class to perform an asynchronous URL based query against Bing
+         WebClient client = new WebClient();
+         client.DownloadStringCompleted += _downloadStringCompleted;
+         // Note that we're passing the callback delegate as user data
          client.DownloadStringAsync(new Uri(requestString), callback);
       }
       #endregion
 
-      #region XML to Object LINQ
+      #region Event handlers
       /// <summary>
-      /// Event handler for Bing Image query result XML
+      /// WebClient DownloadStringAsync Event handler
       /// </summary>
       /// <param name="e">e.UserState as SearchResultCallback</param>
       static private void _downloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
@@ -96,12 +93,27 @@ namespace djc.SilverShorts.Bing
          SearchResultCallback callback = e.UserState as SearchResultCallback;
          if (e.Error != null || callback == null)
             return;
+         
+         _processXmlResults(e.Result.ToString(), callback);
+      }
+      #endregion
+
+      #region Xml to Object LINQ
+      /// <summary>
+      /// Process an Xml string into custom class data
+      /// </summary>
+      /// <param name="xml">string Xml data</param>
+      /// <param name="callback">The user callback to invoke on completion</param>
+      static private void _processXmlResults(string xml, SearchResultCallback callback)
+      {
+         if (callback == null)
+            return;
 
          List<ImageResult> results = null;
          try
          {
             // Parse the XML response text 
-            XDocument doc = XDocument.Parse(e.Result.ToString());
+            XDocument doc = XDocument.Parse(xml);
 
             // Elements in the response all conform to this schema and have a namespace prefix of mms:
             // For our LINQ query to work properly, we must use mmsNs + ElementName
