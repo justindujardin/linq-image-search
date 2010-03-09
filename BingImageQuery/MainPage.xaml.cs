@@ -86,7 +86,7 @@ namespace BingImageQuery
          // Iterate over the results and create Image thumbnails for each
          foreach (ImageResult result in images)
          {
-            Uri uriThumb = new Uri(result.Thumbnail.Url,UriKind.Absolute);
+            Uri uriThumb = new Uri(result.Thumb.Url,UriKind.Absolute);
 
             // The constructor to BitmapImage is passed the URI of the 
             // thumbnail, and asynchronously downloads the image data

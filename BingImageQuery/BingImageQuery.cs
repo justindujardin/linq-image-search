@@ -42,7 +42,7 @@ namespace djc.SilverShorts.Bing
       public int Width;
       public int Height;
       public int FileSize;
-      public class Thumb
+      public class Thumbnail
       {
          public string Url;
          public string ContentType;
@@ -50,7 +50,7 @@ namespace djc.SilverShorts.Bing
          public int Height;
          public int FileSize;
       }
-      public Thumb Thumbnail;
+      public Thumbnail Thumb;
    }
 
    static class ImageQuery
@@ -133,10 +133,10 @@ namespace djc.SilverShorts.Bing
                   Height = Int32.Parse(ir.Element(mmsNs + "Height").Value),
                   FileSize = Int32.Parse(ir.Element(mmsNs + "FileSize").Value),
 
-                  Thumbnail =
+                  Thumb =
                      (from th in ir.Descendants()
                       where th.Name.Equals(mmsNs + "Thumbnail")
-                      select new ImageResult.Thumb()
+                      select new ImageResult.Thumbnail()
                       {
                          Url = th.Element(mmsNs + "Url").Value,
                          ContentType = th.Element(mmsNs + "ContentType").Value,
