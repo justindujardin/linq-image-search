@@ -60,26 +60,21 @@ namespace djc.SilverShorts.Bing
       static public void Search(string appId, string search, SearchResultCallback callback, int numImages = 10, int offsetIndex = 0, bool useSafeSearch = true)
       {
          string requestString = "http://api.bing.net/xml.aspx?"
-             // Common request fields (required)
              + "AppId=" + appId
              + "&Query=" + search
              + "&Sources=Image"
-             // Common request fields (optional)
              + "&Version=2.0"
              + "&Market=en-us"
              + (useSafeSearch ? "&Adult=Moderate" : "")
-             // Image-specific request fields (optional)
              + "&Image.Count=" + numImages.ToString()
              + "&Image.Offset=" + offsetIndex.ToString();
 
-         // Create a URI from the request string 
-         Uri uri = new Uri(requestString, UriKind.Absolute);
-         
          // Use the WebClient class to perform an asynchronous URL based query against Bing
+         Uri uri = new Uri(requestString, UriKind.Absolute);
          WebClient client = new WebClient();
          client.DownloadStringCompleted += _downloadStringCompleted;
          // Note that we're passing the callback delegate as user data
-         client.DownloadStringAsync(new Uri(requestString), callback);
+         client.DownloadStringAsync(uri, callback);
       }
       #endregion
 
