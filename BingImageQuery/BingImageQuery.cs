@@ -26,39 +26,22 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
+using djc.SilverShorts.Images;
 
-namespace djc.SilverShorts.Bing
+namespace djc.SilverShorts.Images.Bing
 {
-   public class ImageResult
-   {
-      public string Title;
-      public string MediaUrl;
-      public string Url;
-      public string DisplayUrl;
-      public int Width;
-      public int Height;
-      public int FileSize;
-      public class Thumbnail
-      {
-         public string Url;
-         public string ContentType;
-         public int Width;
-         public int Height;
-         public int FileSize;
-      }
-      public Thumbnail Thumb;
-   }
 
    static class ImageQuery
    {
       #region Public Search Interface
-      public delegate void SearchResultCallback(List<ImageResult> results);
       static public void Search(string appId, string search, SearchResultCallback callback, int numImages = 10, int offsetIndex = 0, bool useSafeSearch = true)
       {
+         if (string.IsNullOrEmpty(appId))
+            throw new ArgumentNullException("appId", "Bing Image search requires an application key.  See: http://www.bing.com/developer/");
+
          string requestString = "http://api.bing.net/xml.aspx?"
              + "AppId=" + appId
              + "&Query=" + search
@@ -126,7 +109,6 @@ namespace djc.SilverShorts.Bing
                   DisplayUrl = ir.Element(mmsNs + "DisplayUrl").Value,
                   Width = Int32.Parse(ir.Element(mmsNs + "Width").Value),
                   Height = Int32.Parse(ir.Element(mmsNs + "Height").Value),
-                  FileSize = Int32.Parse(ir.Element(mmsNs + "FileSize").Value),
 
                   Thumb =
                      (from th in ir.Descendants()
@@ -134,10 +116,8 @@ namespace djc.SilverShorts.Bing
                       select new ImageResult.Thumbnail()
                       {
                          Url = th.Element(mmsNs + "Url").Value,
-                         ContentType = th.Element(mmsNs + "ContentType").Value,
                          Width = Int32.Parse(th.Element(mmsNs + "Width").Value),
                          Height = Int32.Parse(th.Element(mmsNs + "Height").Value),
-                         FileSize = Int32.Parse(th.Element(mmsNs + "FileSize").Value)
                       }).Single(),
                };
 

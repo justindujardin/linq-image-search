@@ -29,16 +29,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using djc.SilverShorts.Bing;
+using djc.SilverShorts.Images;
 
 namespace BingImageQuery
 {
    public partial class MainPage : UserControl
    {
       /// <summary>
-      /// Your Bing Application Id goes here (the default is not real and will not work)
+      /// Your Bing Application Id goes here
       /// </summary>
-      private const string _appId = "KJH45KJHF89U0W98FO8318HJF8YAQ089F3O2HJRF";
+      private const string _bingAppId = "";
+
+      /// <summary>
+      /// Your Google Application Id goes here
+      /// </summary>
+      private const string _googleAppId = "";
 
       public MainPage()
       {
@@ -58,8 +63,12 @@ namespace BingImageQuery
          // Clear any thumbnails from the canvas grid
          pssCanvas.Children.Clear();
 
-         // Perform the search
-         ImageQuery.Search(_appId, txtInput.Text, new ImageQuery.SearchResultCallback(BingSearchResults));
+         // If a Bing app id is specified use it, otherwise do a Google query which does
+         // not require an app id (though they do recommend the usage of one)
+         if(!string.IsNullOrEmpty(_bingAppId))
+            djc.SilverShorts.Images.Bing.ImageQuery.Search(_bingAppId, txtInput.Text, new SearchResultCallback(ImageQueryResults), 9, 3);
+         else
+            djc.SilverShorts.Images.Google.ImageQuery.Search(_googleAppId,txtInput.Text, new SearchResultCallback(ImageQueryResults), 9, 0);
       }
       private void txtInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
       {
@@ -71,13 +80,13 @@ namespace BingImageQuery
       }
       #endregion
 
-      #region Bing Image Search Results Callback
+      #region Image Query Results Callback
       /// <summary>
-      /// Handle results of a Bing Image query, placing thumbnails on the Grid Canvas for viewing
+      /// Handle results of an Image query, placing thumbnails on the Grid Canvas for viewing
       /// </summary>
-      /// <param name="images">A List of djc.SilverShorts.Bing.ImageResult objects 
+      /// <param name="images">A List of djc.SilverShorts.Images.ImageResult objects 
       /// that describe the results of a Bing query</param>
-      private void BingSearchResults(List<ImageResult> images)
+      private void ImageQueryResults(List<ImageResult> images)
       {
          int gridCol = 0;
          int gridRow = 0;
