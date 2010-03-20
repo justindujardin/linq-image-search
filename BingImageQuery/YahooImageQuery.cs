@@ -24,66 +24,71 @@
 // THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
+using System.Net;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Ink;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Shapes;
+using SilverShorts;
 using System.Linq;
 using System.Xml.Linq;
+using System.Xml;
+using System.Collections.Generic;
 
 namespace SilverShorts
 {
    /// <summary>
-   /// Implement a Microsoft Bing IImageQuery provider
+   /// Implement a Yahoo Image Search IImageQuery provider
    /// </summary>
-   public class BingImageQuery : IImageQuery
+   public class YahooImageQuery : IImageQuery
    {
       /// <summary>
-      /// Bing Image Query requires a valid ApiKey
-      /// See: http://www.bing.com/developer/
+      /// Yahoo Image Query requires a valid ApiKey
+      /// See: https://developer.apps.yahoo.com/projects
       /// </summary>
       public bool RequiresApiKey { get { return true; } }
 
-      public string FormatQueryUrl(string search, string appId, int numImages, int offset, bool useSafeSearch)
+      public string FormatQueryUrl(string search, string apiKey, int numImages, int offset, bool useSafeSearch)
       {
-         return "http://api.bing.net/xml.aspx?"
-             + "AppId=" + appId
-             + "&Query=" + search
-             + "&Sources=Image"
-             + "&Version=2.0"
-             + "&Market=en-us"
-             + (useSafeSearch ? "&Adult=Moderate" : "")
-             + "&Image.Count=" + numImages.ToString()
-             + "&Image.Offset=" + offset.ToString();
+         return "http://search.yahooapis.com/ImageSearchService/V1/imageSearch?"
+          + "appid=" + apiKey
+          + "&query=" + search
+          + "&results=" + numImages
+          + "&start=" + offset
+          + (useSafeSearch ? "" : "&adult_ok=1");
       }
 
       public void ProcessResultString(string response, List<ImageResult> results)
       {
          // Parse the XML response text 
          XDocument doc = XDocument.Parse(response);
-
-         // Elements in the response all conform to this schema and have a namespace prefix of mms:
-         // For our LINQ query to work properly, we must use mmsNs + ElementName
-         XNamespace mmsNs = XNamespace.Get("http://schemas.microsoft.com/LiveSearch/2008/04/XML/multimedia");
-
+         XNamespace yahNs = "urn:yahoo:srchmi";
+         
          // Build a LINQ query to parse the XML data into our custom ImageResult objects
          var imageResults =
             from ir in doc.Descendants()
-            where ir.Name.Equals(mmsNs + "ImageResult")
+            where ir.Name.Equals(yahNs + "Result")
             select new ImageResult()
             {
-               Title = ir.Element(mmsNs + "Title").Value,
-               MediaUrl = ir.Element(mmsNs + "MediaUrl").Value,
-               Url = ir.Element(mmsNs + "Url").Value,
-               DisplayUrl = ir.Element(mmsNs + "DisplayUrl").Value,
-               Width = Int32.Parse(ir.Element(mmsNs + "Width").Value),
-               Height = Int32.Parse(ir.Element(mmsNs + "Height").Value),
+               Title = ir.Element(yahNs + "Title").Value,
+               MediaUrl = ir.Element(yahNs + "ClickUrl").Value,
+               Url = ir.Element(yahNs + "Url").Value,
+               DisplayUrl = ir.Element(yahNs + "RefererUrl").Value,
+               Width = Int32.Parse(ir.Element(yahNs + "Width").Value),
+               Height = Int32.Parse(ir.Element(yahNs + "Height").Value),
 
                Thumb =
                   (from th in ir.Descendants()
-                   where th.Name.Equals(mmsNs + "Thumbnail")
+                   where th.Name.Equals(yahNs + "Thumbnail")
                    select new ImageResult.Thumbnail()
                    {
-                      Url = th.Element(mmsNs + "Url").Value,
-                      Width = Int32.Parse(th.Element(mmsNs + "Width").Value),
-                      Height = Int32.Parse(th.Element(mmsNs + "Height").Value),
+                      Url = th.Element(yahNs + "Url").Value,
+                      Width = Int32.Parse(th.Element(yahNs + "Width").Value),
+                      Height = Int32.Parse(th.Element(yahNs + "Height").Value),
                    }).Single(),
             };
 

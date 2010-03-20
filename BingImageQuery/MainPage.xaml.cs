@@ -29,7 +29,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using djc.SilverShorts.Images;
+using SilverShorts;
 
 namespace BingImageQuery
 {
@@ -38,12 +38,12 @@ namespace BingImageQuery
       /// <summary>
       /// Your Bing Application Id goes here
       /// </summary>
-      private const string _bingAppId = "";
-
+      private const string _bingApiKey = "";
       /// <summary>
-      /// Your Google Application Id goes here
+      /// Your Yahoo Api Key goes here
       /// </summary>
-      private const string _googleAppId = "";
+      private const string _yahooApiKey = "";
+
 
       public MainPage()
       {
@@ -63,12 +63,30 @@ namespace BingImageQuery
          // Clear any thumbnails from the canvas grid
          pssCanvas.Children.Clear();
 
-         // If a Bing app id is specified use it, otherwise do a Google query which does
-         // not require an app id (though they do recommend the usage of one)
-         if(!string.IsNullOrEmpty(_bingAppId))
-            djc.SilverShorts.Images.Bing.ImageQuery.Search(_bingAppId, txtInput.Text, new SearchResultCallback(ImageQueryResults), 9, 3);
+         // If we have a Bing api key use Bing, if not try Yahoo, then use Google
+         if (!string.IsNullOrEmpty(_bingApiKey))
+         {
+            // Bing
+            WebImageQuery query = new WebImageQuery(new SilverShorts.BingImageQuery());
+            query.QueryCompleted += ImageQueryCompleted;
+            query.ApiKey = _bingApiKey;
+            query.Search(txtInput.Text);
+         }
+         else if(!string.IsNullOrEmpty(_yahooApiKey))
+         {
+            // Yahoo
+            WebImageQuery query = new WebImageQuery(new SilverShorts.YahooImageQuery());
+            query.QueryCompleted += ImageQueryCompleted;
+            query.ApiKey = _yahooApiKey;
+            query.Search(txtInput.Text);
+         }
          else
-            djc.SilverShorts.Images.Google.ImageQuery.Search(_googleAppId,txtInput.Text, new SearchResultCallback(ImageQueryResults), 9, 0);
+         {
+            // Google
+            WebImageQuery query = new WebImageQuery(new SilverShorts.GoogleImageQuery());
+            query.QueryCompleted += ImageQueryCompleted;
+            query.Search(txtInput.Text);
+         }
       }
       private void txtInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
       {
@@ -86,7 +104,7 @@ namespace BingImageQuery
       /// </summary>
       /// <param name="images">A List of djc.SilverShorts.Images.ImageResult objects 
       /// that describe the results of a Bing query</param>
-      private void ImageQueryResults(List<ImageResult> images)
+      private void ImageQueryCompleted(List<ImageResult> images)
       {
          int gridCol = 0;
          int gridRow = 0;

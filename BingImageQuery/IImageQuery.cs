@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace djc.SilverShorts.Images
+namespace SilverShorts
 {
    /// <summary>
    /// Describe an ImageResult from an IImageQuery response
@@ -22,29 +22,30 @@ namespace djc.SilverShorts.Images
       public Thumbnail Thumb;
    }
 
-   public delegate void SearchResultCallback(List<ImageResult> results);
    public interface IImageQuery
    {
+      /// <summary>
+      /// Determines whether this provider requires a valid API key
+      /// </summary>
+      bool RequiresApiKey { get; }
+
       /// <summary>
       /// Format a Url string for a specific ImageQuery service
       /// </summary>
       /// <param name="search">The search terms to use in the query</param>
-      /// <param name="appId">
-      /// The specific query API's developer Id. 
-      /// Some services require this and should throw an exception if it is empty.  
-      /// Others may ignore it.
-      /// </param>
+      /// <param name="apiKey">The specific query ApiKey</param>
       /// <param name="numImages">The number of results desired</param>
+      /// <param name="offset">The desired result index offset</param>
       /// <param name="useSafeSearch">Exclude explicit images. Whatever that means anymore.</param>
       /// <returns>Formatted URL to query the image search service</returns>
-      string FormatQueryUrl(string search, string appId = "", int numImages = 10, bool useSafeSearch = true);
+      string FormatQueryUrl(string search, string apiKey, int numImages, int offset, bool useSafeSearch);
 
       /// <summary>
       /// Process image query results from formatted URL string query
       /// </summary>
       /// <param name="response">string response data</param>
       /// <param name="results">a compatible list container for the ImageResult's</param>
-      void ProcessResultString(string response, IList<ImageResult> results);
+      void ProcessResultString(string response, List<ImageResult> results);
 
    }
 }
