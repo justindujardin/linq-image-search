@@ -51,7 +51,7 @@ namespace BingImageQuery
          if (!btnSearch.IsEnabled)
             return;
 
-         // Dsiable the UI elements that can be interacted with while a query is happening
+         // Disable the UI elements that can be interacted with while a query is happening
          btnSearch.IsEnabled = false;
          txtInput.IsEnabled = false;
 
