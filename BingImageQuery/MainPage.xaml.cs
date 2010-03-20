@@ -29,16 +29,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using djc.SilverShorts.Bing;
+using SilverShorts;
 
 namespace BingImageQuery
 {
    public partial class MainPage : UserControl
    {
       /// <summary>
-      /// Your Bing Application Id goes here (the default is not real and will not work)
+      /// Your Bing Application Id goes here
       /// </summary>
-      private const string _appId = "KJH45KJHF89U0W98FO8318HJF8YAQ089F3O2HJRF";
+      private const string _bingApiKey = "";
+      /// <summary>
+      /// Your Yahoo Api Key goes here
+      /// </summary>
+      private const string _yahooApiKey = "";
+
 
       public MainPage()
       {
@@ -51,15 +56,37 @@ namespace BingImageQuery
          if (!btnSearch.IsEnabled)
             return;
 
-         // Dsiable the UI elements that can be interacted with while a query is happening
+         // Disable the UI elements that can be interacted with while a query is happening
          btnSearch.IsEnabled = false;
          txtInput.IsEnabled = false;
 
          // Clear any thumbnails from the canvas grid
          pssCanvas.Children.Clear();
 
-         // Perform the search
-         ImageQuery.Search(_appId, txtInput.Text, new ImageQuery.SearchResultCallback(BingSearchResults));
+         // If we have a Bing api key use Bing, if not try Yahoo, then use Google
+         if (!string.IsNullOrEmpty(_bingApiKey))
+         {
+            // Bing
+            WebImageQuery query = new WebImageQuery(new SilverShorts.BingImageQuery());
+            query.QueryCompleted += ImageQueryCompleted;
+            query.ApiKey = _bingApiKey;
+            query.Search(txtInput.Text);
+         }
+         else if(!string.IsNullOrEmpty(_yahooApiKey))
+         {
+            // Yahoo
+            WebImageQuery query = new WebImageQuery(new SilverShorts.YahooImageQuery());
+            query.QueryCompleted += ImageQueryCompleted;
+            query.ApiKey = _yahooApiKey;
+            query.Search(txtInput.Text);
+         }
+         else
+         {
+            // Google
+            WebImageQuery query = new WebImageQuery(new SilverShorts.GoogleImageQuery());
+            query.QueryCompleted += ImageQueryCompleted;
+            query.Search(txtInput.Text);
+         }
       }
       private void txtInput_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
       {
@@ -71,13 +98,13 @@ namespace BingImageQuery
       }
       #endregion
 
-      #region Bing Image Search Results Callback
+      #region Image Query Results Callback
       /// <summary>
-      /// Handle results of a Bing Image query, placing thumbnails on the Grid Canvas for viewing
+      /// Handle results of an Image query, placing thumbnails on the Grid Canvas for viewing
       /// </summary>
-      /// <param name="images">A List of djc.SilverShorts.Bing.ImageResult objects 
+      /// <param name="images">A List of djc.SilverShorts.Images.ImageResult objects 
       /// that describe the results of a Bing query</param>
-      private void BingSearchResults(List<ImageResult> images)
+      private void ImageQueryCompleted(List<ImageResult> images)
       {
          int gridCol = 0;
          int gridRow = 0;
@@ -86,7 +113,7 @@ namespace BingImageQuery
          // Iterate over the results and create Image thumbnails for each
          foreach (ImageResult result in images)
          {
-            Uri uriThumb = new Uri(result.Thumbnail.Url,UriKind.Absolute);
+            Uri uriThumb = new Uri(result.Thumb.Url,UriKind.Absolute);
 
             // The constructor to BitmapImage is passed the URI of the 
             // thumbnail, and asynchronously downloads the image data

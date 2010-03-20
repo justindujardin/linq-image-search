@@ -4,15 +4,22 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" xmlns:dataInput="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls.Data.Input" xmlns:controls="clr-namespace:System.Windows.Controls;assembly=System.Windows.Controls" d:DesignHeight="199" d:DesignWidth="320" MinWidth="320" MinHeight="50">
+    
+    <!-- UI Effects -->
+    <UserControl.Resources>
+        <DropShadowEffect x:Key="canvasShadow" ShadowDepth="1" BlurRadius="5" />
+	<DropShadowEffect x:Key="titleShadow" ShadowDepth="1" BlurRadius="4" />
+        <DropShadowEffect x:Key="textShadow" ShadowDepth="1" BlurRadius="2" Opacity="0.75" />
+    </UserControl.Resources>
+    
     <Grid x:Name="LayoutRoot">
         <!-- Header -->
-        <TextBox Height="28" Margin="180,12,61,0" Name="txtInput" VerticalAlignment="Top" Text="Turtles" MaxLength="20" TextAlignment="Center" Foreground="Gray" FontSize="14" FontWeight="Normal" FontStyle="Normal" KeyDown="txtInput_KeyDown" Background="LightYellow">
-        </TextBox>
+        <dataInput:Label Content="Silver Shorts" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" FontFamily="Arial" FontSize="24" Foreground="WhiteSmoke" Margin="12,11,0,0" Effect="{StaticResource textShadow}"/>
+        <dataInput:Label Content="(bing)" FontFamily="Arial" FontSize="10" Foreground="#CDFF0000" Height="Auto" HorizontalAlignment="Left" Margin="151,11,0,0" VerticalAlignment="Top" Width="Auto" Opacity="0.75" Effect="{StaticResource textShadow}"/>
+        <TextBox Height="28" Margin="180,12,61,0" Name="txtInput" VerticalAlignment="Top" Text="Turtles" MaxLength="20" TextAlignment="Center" Foreground="Gray" FontSize="14" FontWeight="Normal" FontStyle="Normal" KeyDown="txtInput_KeyDown" Background="LightYellow"/>
+        <Button Content="GO" Height="28" Margin="0,12,12,0" Name="btnSearch" VerticalAlignment="Top" FontSize="14" Foreground="#D4000000" HorizontalAlignment="Right" Width="43" Click="btnSearch_Click" />
         <!-- Canvas -->
-        <ScrollViewer Background="LightYellow" Margin="12,54,13,12" Name="canvasScroll" Padding="6" VerticalScrollBarVisibility="Auto" Visibility="Visible">
-            <ScrollViewer.Effect>
-                <DropShadowEffect ShadowDepth="1" BlurRadius="5" />
-            </ScrollViewer.Effect>
+        <ScrollViewer Background="LightYellow" Margin="12,54,13,12" Name="canvasScroll" Padding="6" VerticalScrollBarVisibility="Auto" Visibility="Visible" Effect="{StaticResource canvasShadow}">
             <Grid x:Name="pssCanvas" Height="Auto" Width="Auto">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="110*" />
@@ -26,16 +33,5 @@
                 </Grid.ColumnDefinitions>
             </Grid>
         </ScrollViewer>
-        <dataInput:Label Content="Silver Shorts" Height="Auto" HorizontalAlignment="Left" VerticalAlignment="Top" Width="Auto" FontFamily="Arial" FontSize="24" Foreground="WhiteSmoke" Margin="12,11,0,0">
-            <dataInput:Label.Effect>
-                <DropShadowEffect ShadowDepth="1" BlurRadius="4" />
-            </dataInput:Label.Effect>
-        </dataInput:Label>
-        <dataInput:Label Content="(bing)" FontFamily="Arial" FontSize="10" Foreground="#CDFF0000" Height="Auto" HorizontalAlignment="Left" Margin="151,11,0,0" VerticalAlignment="Top" Width="Auto" Opacity="0.75">
-            <dataInput:Label.Effect>
-                <DropShadowEffect BlurRadius="2" ShadowDepth="1" Opacity="0.75" />
-            </dataInput:Label.Effect>
-        </dataInput:Label>
-        <Button Content="GO" Height="28" Margin="0,12,12,0" Name="btnSearch" VerticalAlignment="Top" FontSize="14" Foreground="#D4000000" HorizontalAlignment="Right" Width="43" Click="btnSearch_Click" />
     </Grid>
 </UserControl>
