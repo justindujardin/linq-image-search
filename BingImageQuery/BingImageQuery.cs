@@ -26,10 +26,9 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using System.Linq;
-using djc.SilverShorts.Images;
 
 namespace djc.SilverShorts.Images.Bing
 {
@@ -61,7 +60,6 @@ namespace djc.SilverShorts.Images.Bing
       }
       #endregion
 
-      #region Event handlers
       /// <summary>
       /// WebClient DownloadStringAsync Event handler
       /// </summary>
@@ -74,7 +72,6 @@ namespace djc.SilverShorts.Images.Bing
          
          _processXmlResults(e.Result.ToString(), callback);
       }
-      #endregion
 
       #region Xml to Object LINQ
       /// <summary>
@@ -84,8 +81,8 @@ namespace djc.SilverShorts.Images.Bing
       /// <param name="callback">The user callback to invoke on completion</param>
       static private void _processXmlResults(string xml, SearchResultCallback callback)
       {
-         if (callback == null)
-            return;
+         if (callback == null) 
+            throw new ArgumentNullException("callback");
 
          List<ImageResult> results = null;
          try

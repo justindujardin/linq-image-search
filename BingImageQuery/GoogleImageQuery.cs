@@ -29,17 +29,14 @@ using System.Net;
 using System.Linq;
 using Newtonsoft.Json.Linq;
 
-
 namespace djc.SilverShorts.Images.Google
 {
+
    static class ImageQuery
    {
       #region Public Search Interface
       static public void Search(string appId, string search, SearchResultCallback callback, int numImages = 10, int offsetIndex = 0, bool useSafeSearch = true)
       {
-         // Use the WebClient class to perform an asynchronous URL based query against Bing
-         WebClient client = new WebClient();
-         client.DownloadStringCompleted += _downloadStringCompleted;
 
          string requestString = "http://ajax.googleapis.com/ajax/services/search/images?v=1.0"
              // Query 
@@ -51,12 +48,27 @@ namespace djc.SilverShorts.Images.Google
              // Offset results
              + "&start=" + Convert.ToString(offsetIndex);
 
-         // Create a URI from the request string and fire off the query
-         // Note that we're passing the callback delegate as user data
+         // Use the WebClient class to perform an asynchronous URL based query against Bing
          Uri uri = new Uri(requestString, UriKind.Absolute);
+         WebClient client = new WebClient();
+         client.DownloadStringCompleted += _downloadStringCompleted;
+         // Note that we're passing the callback delegate as user data
          client.DownloadStringAsync(uri, callback);
       }
       #endregion
+
+      /// <summary>
+      /// WebClient DownloadStringAsync Event handler
+      /// </summary>
+      /// <param name="e">e.UserState as SearchResultCallback</param>
+      static private void _downloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
+      {
+         SearchResultCallback callback = e.UserState as SearchResultCallback;
+         if (e.Error != null || callback == null)
+            return;
+
+         _processJsonResults(e.Result.ToString(), callback);
+      }
 
       #region JSON to Object LINQ
       /// <summary>
@@ -99,6 +111,7 @@ namespace djc.SilverShorts.Images.Google
                   }
                };
 
+            // Execute the LINQ query and stuff the results into our list 
             results = imageResults.ToList();
          }
          catch (System.Exception ex)
@@ -110,18 +123,6 @@ namespace djc.SilverShorts.Images.Google
             results = new List<ImageResult>();
          // invoke search callback
          callback(results);
-      }
-      /// <summary>
-      /// Event handler for Google Image query result JSON string
-      /// </summary>
-      /// <param name="e">e.UserState as SearchResultCallback</param>
-      static private void _downloadStringCompleted(object sender, DownloadStringCompletedEventArgs e)
-      {
-         SearchResultCallback callback = e.UserState as SearchResultCallback;
-         if (e.Error != null || callback == null)
-            return;
-
-         _processJsonResults(e.Result.ToString(), callback);
       }
       #endregion
    }
