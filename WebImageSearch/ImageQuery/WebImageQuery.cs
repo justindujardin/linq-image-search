@@ -1,4 +1,14 @@
-﻿using System;
+﻿//-----------------------------------------------------------------------------
+// Silverlight 3 WebImageQuery Class
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 DuJardin Consulting, LLC
+// For more information see http://www.github.com/justindujardin/SilverShorts/
+//
+// This file is licensed under the terms of the MIT license, which is included
+// in the LICENSE.markdown file at the root directory repository.
+//
+// It may also be found on the web : http://www.opensource.org/licenses/mit-license.php
+using System;
 using System.Collections.Generic;
 using System.Net;
 

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
+﻿//-----------------------------------------------------------------------------
+// Silverlight 3 Web Image Search Example
+//-----------------------------------------------------------------------------
+// Copyright (c) 2010 DuJardin Consulting, LLC
+// For more information see http://www.github.com/justindujardin/SilverShorts/
+//
+// This file is licensed under the terms of the MIT license, which is included
+// in the LICENSE.markdown file at the root directory repository.
+//
+// It may also be found on the web : http://www.opensource.org/licenses/mit-license.php
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
 
 namespace WebImageSearch
 {
