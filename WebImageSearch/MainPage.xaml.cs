@@ -52,7 +52,7 @@ namespace WebImageSearch
          if (!string.IsNullOrEmpty(_bingApiKey))
          {
             // Bing
-            WebImageQuery query = new WebImageQuery(new BingImageQuery());
+            WebImageFinder query = new WebImageFinder(new BingImageQuery());
             query.QueryCompleted += ImageQueryCompleted;
             query.ApiKey = _bingApiKey;
             query.Search(txtInput.Text);
@@ -60,7 +60,7 @@ namespace WebImageSearch
          else if(!string.IsNullOrEmpty(_yahooApiKey))
          {
             // Yahoo
-            WebImageQuery query = new WebImageQuery(new YahooImageQuery());
+            WebImageFinder query = new WebImageFinder(new YahooImageQuery());
             query.QueryCompleted += ImageQueryCompleted;
             query.ApiKey = _yahooApiKey;
             query.Search(txtInput.Text);
@@ -68,7 +68,7 @@ namespace WebImageSearch
          else
          {
             // Google
-            WebImageQuery query = new WebImageQuery(new GoogleImageQuery());
+            WebImageFinder query = new WebImageFinder(new GoogleImageQuery());
             query.QueryCompleted += ImageQueryCompleted;
             query.Search(txtInput.Text);
          }

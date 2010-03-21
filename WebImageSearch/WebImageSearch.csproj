@@ -87,7 +87,7 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ImageQuery\WebImageQuery.cs" />
+    <Compile Include="ImageQuery\WebImageFinder.cs" />
     <Compile Include="ImageQuery\YahooImageQuery.cs" />
   </ItemGroup>
   <ItemGroup>

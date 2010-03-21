@@ -1,5 +1,5 @@
 ﻿//-----------------------------------------------------------------------------
-// Silverlight 3 WebImageQuery Class
+// Silverlight 3 WebImageFinder Class
 //-----------------------------------------------------------------------------
 // Copyright (c) 2010 DuJardin Consulting, LLC
 // For more information see http://www.github.com/justindujardin/SilverShorts/
@@ -14,13 +14,17 @@ using System.Net;
 
 namespace SilverShorts
 {
-   public class WebImageQuery
+   public class WebImageFinder
    {
       /// <summary>
-      /// Construct a WebImageQuery using the specified IImageQuery provider 
+      /// Construct a WebImageFinder using the specified IImageQuery provider 
       /// </summary>
-      public WebImageQuery(IImageQuery provider) { _queryProvider = provider; }
-      private WebImageQuery() { }
+      public WebImageFinder(IImageQuery provider) { _queryProvider = provider; }
+      
+      /// <summary>
+      /// Don't allow object creation without an IImageQuery provider in the constructor
+      /// </summary>
+      private WebImageFinder() { }
 
       private IImageQuery _queryProvider;
 
