@@ -31,7 +31,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using SilverShorts;
 
-namespace BingImageQuery
+namespace WebImageSearch
 {
    public partial class MainPage : UserControl
    {

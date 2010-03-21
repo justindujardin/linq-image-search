@@ -67,18 +67,9 @@ namespace SilverShorts
          if (_queryProvider == null)
             throw new ArgumentNullException("_queryProvider");
 
-         if (e.Error != null)
-            return;
-
          List<ImageResult> results = new List<ImageResult>();
-         try
-         {
+         if (e.Error != null)
             _queryProvider.ProcessResultString(e.Result.ToString(), results);
-         }
-         catch (System.Exception ex)
-         {
-            throw new Exception("Failed Process Image Query Result", ex);
-         }
 
          // QueryCompleted event
          if (QueryCompleted != null)

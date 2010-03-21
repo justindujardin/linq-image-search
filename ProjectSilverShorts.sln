@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BingImageQuery", "BingImageQuery\BingImageQuery.csproj", "{9A8DA06A-384C-4B8D-880A-40731913CDE2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebImageSearch", "WebImageSearch\WebImageSearch.csproj", "{9A8DA06A-384C-4B8D-880A-40731913CDE2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
