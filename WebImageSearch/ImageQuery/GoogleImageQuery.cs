@@ -30,7 +30,7 @@ namespace SilverShorts
       {
          return "http://ajax.googleapis.com/ajax/services/search/images?v=1.0"
              + "&q=" + search
-             + "&key=" + appId
+             + (string.IsNullOrEmpty(appId) ? "" : ("&key=" + appId))
              + (useSafeSearch ? "&safe=m" : "")
              + "&start=" + Convert.ToString(offset);
       }
