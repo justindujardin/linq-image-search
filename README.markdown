@@ -1,1 +1,1 @@
-Project Silver Shorts is available for all under the MIT license.
+This code searches for images using a given search engine, and returns them.  The example app is a basic search and result list.
